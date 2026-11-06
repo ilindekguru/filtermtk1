@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d17">
+<title>PRIMA HEAD TILT — Filter Kuis Matematika AR</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap');
+:root{
+  --bg:#080b14;
+  --glass:rgba(16,22,40,.62);
+  --glass-strong:rgba(14,19,36,.88);
+  --border:rgba(255,255,255,.18);
+  --green:#16db93;
+  --red:#ff4d6d;
+  --gold:#ffd166;
+  --cyan:#4cc9f0;
+  --purple:#7209b7;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{
+  margin:0;padding:0;width:100%;height:100%;overflow:hidden;
+  background:radial-gradient(circle at 50% 20%,#1e1b4b 0%,#080b14 70%);
+  font-family:Nunito,system-ui,sans-serif;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+[hidden]{display:none!important}
+
+/* BINGKAI HP 9:16 ALA INSTAGRAM STORY / REELS */
+.phoneFrame{
+  position:relative;
+  width:100vw;
+  height:100dvh;
+  max-width:460px;
+  max-height:920px;
+  background:#0c1122;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:0 24px 70px rgba(0,0,0,.65);
+}
+@media (min-width:500px){
+  .phoneFrame{
+    height:min(94dvh,880px);
+    aspect-ratio:9/16;
+    width:auto;
+    border-radius:38px;
+    border:5px solid rgba(255,255,255,.15);
+  }
+}
+/* GAYA KHUSUS SAAT MODE FULLSCREEN AKTIF */
+.phoneFrame:fullscreen,.phoneFrame:-webkit-full-screen,.phoneFrame.isFullscreen{
+  width:100vw!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  border-radius:0!important;
+  border:none!important;
+}
+
+/* LAYER KAMERA & CANVAS AR */
+.cameraLayer{
+  position:absolute;inset:0;z-index:1;overflow:hidden;
+  background:radial-gradient(circle at 50% 35%,#222b52 0%,#0b1021 75%);
+}
+.cameraLayer video,.cameraLayer canvas{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+.cameraLayer video{
+  transform:scaleX(-1);
+  display:none;
+}
+.cameraLayer video.unmirrored{
+  transform:none;
+}
+
+/* EFEK VIGNETTE INSTAGRAM */
+.vignette{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 16%,transparent 82%,rgba(0,0,0,.62) 100%);
+}
+
+/* BANNER MULAI CEPAT - TIDAK MENUTUPI TOMBOL BAWAH */
+.startPrompt{
+  position:absolute;
+  left:20px;right:20px;
+  top:52%;
+  transform:translateY(-50%);
+  z-index:25;
+  background:rgba(13,19,38,.86);
+  backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,.22);
+  border-radius:24px;
+  padding:16px 16px;
+  text-align:center;
+  box-shadow:0 20px 45px rgba(0,0,0,.55);
+}
+.startPrompt .iconPulse{
+  width:46px;height:46px;margin:0 auto 8px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:24px;
+  background:linear-gradient(135deg,#f72585,#7209b7,#4cc9f0);
+  box-shadow:0 0 20px rgba(76,201,240,.5);
+}
+.startPrompt h2{
+  margin:0 0 4px;font:900 18px Outfit,sans-serif;letter-spacing:-.3px;
+}
+.startPrompt p{
+  margin:0 0 10px;font-size:12px;line-height:1.4;color:#cbd5e1;
+}
+.startCtaBtn{
+  width:100%;padding:12px 16px;border-radius:999px;
+  background:linear-gradient(90deg,#16db93,#00bbf9);
+  color:#062019;font:900 14.5px Outfit,sans-serif;
+  box-shadow:0 10px 24px rgba(22,219,147,.38);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .15s;
+}
+.startCtaBtn:active{transform:scale(.97)}
+.frontTopicPicker{
+  margin:8px 0 12px;
+  text-align:left;
+}
+.frontTopicPicker label{
+  display:block;font-size:10px;font-weight:900;text-transform:uppercase;
+  letter-spacing:.7px;color:#ffd166;margin-bottom:6px;text-align:center;
+}
+.frontTopicGrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+}
+.frontTopicBtn{
+  padding:7px 6px;border-radius:10px;
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.14);
+  font:800 11px Nunito,sans-serif;color:#e2e8f0;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:.14s;
+}
+.frontTopicBtn.active{
+  background:rgba(22,219,147,.24);
+  border-color:var(--green);color:#fff;
+  box-shadow:0 0 12px rgba(22,219,147,.28);
+}
+.cheerBanner{
+  position:absolute;left:50%;top:46%;
+  transform:translate(-50%,-50%) scale(.7);
+  z-index:28;pointer-events:none;
+  padding:10px 20px;border-radius:999px;
+  font:900 20px Outfit,sans-serif;
+  background:linear-gradient(135deg,#16db93,#ffd166);
+  color:#052e16;
+  box-shadow:0 18px 40px rgba(0,0,0,.5);
+  opacity:0;transition:transform .22s cubic-bezier(.18,1.3,.4,1),opacity .22s;
+  white-space:nowrap;
+}
+.cheerBanner.wrong{
+  background:linear-gradient(135deg,#ff4d6d,#f72585);color:#fff;
+}
+.cheerBanner.show{
+  opacity:1;transform:translate(-50%,-50%) scale(1);
+}
+
+/* KARTU SOAL MELAYANG DI DAHI (RINGKAS AGAR WAJAH LEGA) */
+.foreheadAnchor{
+  position:absolute;
+  left:50%;
+  top:20%;
+  transform:translate(-50%,-50%) rotate(0deg);
+  z-index:12;
+  width:min(82%,285px);
+  pointer-events:none;
+  transition:left .06s linear,top .06s linear,transform .06s linear;
+}
+.foreheadCard{
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);
+  color:#141b2d;
+  border-radius:20px;
+  padding:9px 12px 10px;
+  border:3px solid #ffd166;
+  box-shadow:0 12px 28px rgba(0,0,0,.42);
+  text-align:center;
+  position:relative;
+}
+.foreheadCard.tiltLeft{
+  border-color:var(--green);
+  box-shadow:0 12px 30px rgba(22,219,147,.45),0 0 0 5px rgba(22,219,147,.3);
+}
+.foreheadCard.tiltRight{
+  border-color:var(--red);
+  box-shadow:0 12px 30px rgba(255,77,109,.45),0 0 0 5px rgba(255,77,109,.3);
+}
+.cardHeaderRow{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  margin-bottom:3px;
+}
+.cardTopicBadge{
+  background:#1e293b;color:#ffd166;
+  font:900 9px Outfit,sans-serif;
+  padding:3px 8px;border-radius:999px;letter-spacing:.5px;text-transform:uppercase;
+}
+.cardCounter{
+  font:900 10px Outfit,sans-serif;color:#64748b;
+}
+.cardQuestion{
+  font:900 clamp(15px,4.1vw,18.5px)/1.22 Outfit,sans-serif;
+  color:#0f172a;
+  margin:3px 0 7px;
+}
+.cardQuestion em{
+  font-style:normal;color:#0d9488;
+  background:#ccfbf1;padding:0 5px;border-radius:6px;
+}
+.cardLeanRow{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+}
+.leanPill{
+  flex:1;padding:4px 6px;border-radius:9px;
+  font:900 10px Outfit,sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:3px;
+}
+.leanPill.left{background:#dcfce7;color:#065f46}
+.leanPill.right{background:#ffe4e6;color:#9f1239}
+.holdProgressTrack{
+  margin-top:6px;height:5px;border-radius:99px;background:#e2e8f0;overflow:hidden;
+}
+.holdProgressFill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#16db93,#00bbf9);
+  transition:width .07s linear;
+}
+
+/* LENCANA SAMPING TIPIS SAAT MIRING */
+.sideGlow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  z-index:11;pointer-events:none;
+  padding:8px 7px;border-radius:14px;
+  font:900 10px Outfit,sans-serif;letter-spacing:.4px;
+  opacity:0;transition:.18s;
+  backdrop-filter:blur(6px);
+}
+.sideGlow.left{
+  left:8px;background:rgba(22,219,147,.28);border:1.5px solid rgba(22,219,147,.6);color:#d1fae5;
+}
+.sideGlow.right{
+  right:8px;background:rgba(255,77,109,.28);border:1.5px solid rgba(255,77,109,.6);color:#ffe4e6;
+}
+.sideGlow.active{
+  opacity:1;transform:translateY(-50%) scale(1.05);
+}
+
+/* TOP HUD MINIMALIS ALA INSTAGRAM STORIES */
+.topHud{
+  position:relative;z-index:20;
+  padding:10px 12px 0;
+}
+.storyBars{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:1fr;
+  gap:3px;
+  margin-bottom:8px;
+}
+.storySeg{
+  height:3px;border-radius:99px;background:rgba(255,255,255,.26);overflow:hidden;
+}
+.storySeg > span{
+  display:block;height:100%;width:0%;background:#fff;transition:width .25s;
+}
+.storySeg.done > span{width:100%;background:var(--green)}
+.storySeg.wrong > span{width:100%;background:var(--red)}
+.storySeg.current > span{width:60%;background:var(--gold)}
+
+.igHeader{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+}
+.topicSwitchPill{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(15,23,42,.52);backdrop-filter:blur(10px);
+  padding:5px 11px 5px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  transition:transform .12s;
+}
+.topicSwitchPill:active{transform:scale(.96)}
+.avatarRing{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#f72585,#ffd166,#4cc9f0);
+  display:grid;place-items:center;font-size:14px;
+}
+.creatorText{text-align:left}
+.creatorText strong{
+  display:flex;align-items:center;gap:4px;font:900 11.5px Outfit,sans-serif;line-height:1.1;
+}
+.creatorText small{
+  display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:800;color:#cbd5e1;
+}
+.liveDot{
+  width:6px;height:6px;border-radius:50%;background:#94a3b8;display:inline-block;
+}
+.liveDot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
+
+.hudPills{
+  display:flex;align-items:center;gap:5px;
+}
+.hudPill{
+  background:rgba(15,23,42,.52);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.18);border-radius:999px;
+  padding:5px 9px;font:900 11.5px Outfit,sans-serif;
+  display:flex;align-items:center;gap:3px;
+}
+
+/* BOTTOM HUD RAMPING - SATU BARIS KAPSUL AGAR KAMERA LUAS */
+.bottomHud{
+  position:relative;z-index:20;
+  padding:0 12px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  pointer-events:none;
+}
+.explanationToast{
+  pointer-events:auto;
+  max-width:94%;
+  background:rgba(14,19,36,.74);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  padding:6px 13px;text-align:center;
+  font-size:11px;font-weight:800;line-height:1.3;
+  color:#f1f5f9;
+  box-shadow:0 6px 18px rgba(0,0,0,.28);
+}
+.explanationToast.ok{border-color:rgba(22,219,147,.65);color:#a7f3d0}
+.explanationToast.warn{border-color:rgba(255,77,109,.65);color:#fecdd3}
+
+/* SATU DOCK RAMPING DI BAWAH (GABUNGAN JAWAB MANUAL + KONTROL) */
+.igBottomDock{
+  pointer-events:auto;
+  width:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:5px;
+  background:rgba(15,23,42,.55);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;padding:5px 8px;
+}
+.dockBtn{
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:16px;color:#e2e8f0;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+}
+.dockBtn:active{transform:scale(.92);background:rgba(255,255,255,.18)}
+
+.miniAnsBtn{
+  padding:8px 11px;border-radius:999px;
+  font:900 11.5px Outfit,sans-serif;
+  display:flex;align-items:center;gap:4px;
+  transition:transform .12s;
+}
+.miniAnsBtn:active{transform:scale(.94)}
+.miniAnsBtn.trueBtn{
+  background:rgba(22,219,147,.28);border:1.5px solid rgba(22,219,147,.65);color:#d1fae5;
+}
+.miniAnsBtn.falseBtn{
+  background:rgba(255,77,109,.28);border:1.5px solid rgba(255,77,109,.65);color:#ffe4e6;
+}
+
+.shutterCenter{
+  width:46px;height:46px;border-radius:50%;
+  padding:3px;border:2.5px solid #fff;
+  display:grid;place-items:center;
+  flex:0 0 auto;
+}
+.shutterInner{
+  width:100%;height:100%;border-radius:50%;
+  background:linear-gradient(135deg,#16db93,#00bbf9);
+  display:grid;place-items:center;
+  font-size:18px;color:#052e16;
+  transition:transform .15s;
+}
+.shutterCenter.live .shutterInner{
+  background:linear-gradient(135deg,#ff4d6d,#f72585);color:#fff;
+}
+.shutterCenter:active .shutterInner{transform:scale(.9)}
+
+/* BOTTOM SHEET PENGATURAN & SOAL */
+.sheetBackdrop{
+  position:absolute;inset:0;z-index:35;
+  background:rgba(4,7,17,.68);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.sheetBackdrop.show{display:flex}
+.bottomSheet{
+  width:100%;max-height:82%;
+  background:#131b31;
+  border-top:1px solid rgba(255,255,255,.18);
+  border-radius:28px 28px 0 0;
+  padding:14px 18px 24px;
+  overflow-y:auto;
+  color:#f8fafc;
+}
+.sheetHandle{
+  width:42px;height:5px;border-radius:99px;background:rgba(255,255,255,.25);
+  margin:0 auto 12px;
+}
+.sheetTitleRow{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+}
+.sheetTitleRow h3{margin:0;font:900 18px Outfit,sans-serif}
+.closeSheetBtn{
+  padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.1);font-weight:800;font-size:12px;
+}
+.sheetLabel{
+  font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#94a3b8;
+  margin:12px 0 7px;
+}
+.pillGroup{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;
+}
+.pillChoice{
+  padding:10px 8px;border-radius:14px;background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.12);
+  font-size:12px;font-weight:800;text-align:center;color:#cbd5e1;
+}
+.pillChoice.active{
+  background:rgba(22,219,147,.18);border-color:var(--green);color:#fff;
+}
+.sheetSelect{
+  width:100%;padding:11px 12px;border-radius:13px;
+  background:#0c1224;border:1.5px solid rgba(255,255,255,.16);color:#fff;
+}
+.customForm{
+  display:grid;gap:8px;background:rgba(255,255,255,.04);
+  padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.1);
+}
+.customForm input{
+  width:100%;padding:10px 12px;border-radius:11px;
+  background:#0b1020;border:1px solid rgba(255,255,255,.18);
+}
+.customFormRow{display:flex;gap:8px}
+.customFormRow select{
+  flex:1;padding:10px;border-radius:11px;background:#0b1020;border:1px solid rgba(255,255,255,.18);
+}
+.customAddBtn{
+  padding:10px 16px;border-radius:11px;background:var(--green);color:#042f2e;font-weight:900;
+}
+
+/* MODAL SELESAI */
+.finishModal{
+  position:absolute;inset:0;z-index:40;
+  background:rgba(6,10,22,.82);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.finishModal.show{display:flex}
+.finishCard{
+  width:100%;background:#151f38;border:1.5px solid rgba(255,255,255,.18);
+  border-radius:28px;padding:22px 18px;text-align:center;
+}
+.finishCard h2{margin:6px 0;font:900 24px Outfit,sans-serif}
+.finishStats{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;
+}
+.finishStats div{
+  background:rgba(255,255,255,.06);padding:12px;border-radius:16px;
+}
+.finishStats b{display:block;font:900 26px Outfit,sans-serif;color:var(--gold)}
+.finishStats small{font-size:10px;font-weight:800;color:#94a3b8}
+
+.confetti{
+  position:fixed;top:-10px;width:10px;height:16px;border-radius:3px;
+  animation:fall 1.6s linear forwards;z-index:60;pointer-events:none;
+}
+@keyframes fall{to{transform:translate(var(--dx),100vh) rotate(520deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="phoneFrame" id="phoneFrame">
+  <!-- LAYER KAMERA & CANVAS -->
+  <div class="cameraLayer">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="arCanvas"></canvas>
+  </div>
+  <div class="vignette"></div>
+
+  <!-- INDIKATOR SAMPING KIRI & KANAN -->
+  <div class="sideGlow left" id="leftGlow">↖ MIRING KIRI<br><b id="leftGlowText">BENAR</b></div>
+  <div class="sideGlow right" id="rightGlow">MIRING KANAN ↗<br><b id="rightGlowText">SALAH</b></div>
+  <div class="cheerBanner" id="cheerBanner">🎉 HORE! BENAR!</div>
+
+  <!-- KARTU SOAL DI DAHI -->
+  <div class="foreheadAnchor" id="foreheadAnchor">
+    <div class="foreheadCard" id="foreheadCard">
+      <div class="cardHeaderRow">
+        <span class="cardTopicBadge" id="cardTopic">BILANGAN PRIMA</span>
+        <span class="cardCounter" id="cardCounter">1 / 10</span>
+      </div>
+      <div class="cardQuestion" id="cardQuestion"><em>2</em> adalah satu-satunya bilangan prima yang genap.</div>
+      <div class="cardLeanRow">
+        <div class="leanPill left" id="pillLeft">↖ Kiri: BENAR</div>
+        <div class="leanPill right" id="pillRight">Kanan: SALAH ↗</div>
+      </div>
+      <div class="holdProgressTrack">
+        <div class="holdProgressFill" id="holdFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT AKTIFKAN KAMERA (TIDAK MENUTUPI DOCK BAWAH) -->
+  <div class="startPrompt" id="startPrompt">
+    <div class="iconPulse">🤳</div>
+    <h2 id="promptTitle">Filter Kuis Matematika AR</h2>
+    <p id="promptDesc">Pilih topik di bawah, lalu miringkan kepala ke <b>Kiri</b> atau <b>Kanan</b>!</p>
+    <div class="frontTopicPicker">
+      <label>📚 Pilih Topik Matematika:</label>
+      <div class="frontTopicGrid" id="frontTopicGrid">
+        <button class="frontTopicBtn active" type="button" data-pack="prima">🔢 Prima</button>
+        <button class="frontTopicBtn" type="button" data-pack="kuadrat">² Kuadrat</button>
+        <button class="frontTopicBtn" type="button" data-pack="pecahan">🍕 Pecahan</button>
+        <button class="frontTopicBtn" type="button" data-pack="bulat">➕ Bulat</button>
+        <button class="frontTopicBtn" type="button" data-pack="bangun">📐 Luas</button>
+        <button class="frontTopicBtn" type="button" data-pack="untung">💰 Untung</button>
+      </div>
+    </div>
+    <button class="startCtaBtn" id="startCtaBtn" type="button">
+      <span>📷</span> <span id="startCtaLabel">Mulai Kamera & Main!</span>
+    </button>
+  </div>
+
+  <!-- HEADER ATAS MINIMALIS ALA INSTAGRAM STORY -->
+  <header class="topHud">
+    <div class="storyBars" id="storyBars"></div>
+    <div class="igHeader">
+      <button class="topicSwitchPill" id="openSheetTopBtn" type="button" title="Ganti Topik Matematika & Pengaturan">
+        <div class="avatarRing">📚</div>
+        <div class="creatorText">
+          <strong><span id="headerTopicName">Bil. Prima</span> ▾</strong>
+          <small><span class="liveDot" id="liveDot"></span><span id="statusText">Siap</span></small>
+        </div>
+      </button>
+      <div class="hudPills">
+        <div class="hudPill" title="Skor">⭐ <span id="scoreVal">0</span></div>
+        <div class="hudPill" title="Combo">🔥 <span id="streakVal">0</span></div>
+        <div class="hudPill" id="timerPill" hidden>⏱ <span id="timerVal">60s</span></div>
+        <button class="hudPill" id="soundToggleBtn" type="button" title="Suara & Sorakan Hore">🔊</button>
+        <button class="hudPill" id="fullscreenBtn" type="button" title="Mode Layar Penuh (Fullscreen)">⛶</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BAGIAN BAWAH SUPER RINGKAS: 1 BARIS DOCK AGAR KAMERA LUAS -->
+  <footer class="bottomHud">
+    <div class="explanationToast" id="feedbackToast" role="status" aria-live="polite">
+      Miringkan kepala ↖ Kiri / Kanan ↗ atau ketuk tombol di bawah
+    </div>
+
+    <div class="igBottomDock">
+      <button class="dockBtn" id="openSheetBtn" type="button" title="Pilih Topik & Pengaturan">🎛️</button>
+      <button class="miniAnsBtn trueBtn" id="btnAnswerTrue" type="button" title="Jawab Benar">✅ Benar</button>
+      <button class="shutterCenter" id="shutterBtn" type="button" aria-label="Nyalakan atau matikan kamera">
+        <div class="shutterInner" id="shutterIcon">📷</div>
+      </button>
+      <button class="miniAnsBtn falseBtn" id="btnAnswerFalse" type="button" title="Jawab Salah">❌ Salah</button>
+      <button class="dockBtn" id="skipBtn" type="button" title="Lewati Soal">⏭️</button>
+    </div>
+  </footer>
+
+  <!-- BOTTOM SHEET PENGATURAN -->
+  <div class="sheetBackdrop" id="sheetBackdrop">
+    <div class="bottomSheet">
+      <div class="sheetHandle"></div>
+      <div class="sheetTitleRow">
+        <h3>⚙️ Pengaturan Filter & Materi</h3>
+        <button class="closeSheetBtn" id="closeSheetBtn" type="button">Tutup ✕</button>
+      </div>
+
+      <div class="sheetLabel">Pilih Topik Matematika (Soal Diacak)</div>
+      <div class="pillGroup" id="packageGroup" style="grid-template-columns:repeat(2,1fr)">
+        <button class="pillChoice active" type="button" data-pack="prima">🔢 Bilangan Prima</button>
+        <button class="pillChoice" type="button" data-pack="kuadrat">² Bilangan Kuadrat & Akar</button>
+        <button class="pillChoice" type="button" data-pack="pecahan">🍕 Perbandingan Pecahan</button>
+        <button class="pillChoice" type="button" data-pack="bulat">➕ Operasi Bilangan Bulat</button>
+        <button class="pillChoice" type="button" data-pack="bangun">📐 Luas Bangun Datar</button>
+        <button class="pillChoice" type="button" data-pack="untung">💰 Untung & Rugi</button>
+        <button class="pillChoice" type="button" data-pack="campuran" style="grid-column:span 2">🎲 Campuran Semua Topik (Acak Total)</button>
+      </div>
+
+      <div class="sheetLabel">Mode Permainan</div>
+      <div class="pillGroup" id="modeGroup" style="grid-template-columns:1fr 1fr">
+        <button class="pillChoice active" type="button" data-mode="santai">😎 Santai Tanpa Timer</button>
+        <button class="pillChoice" type="button" data-mode="cepat">⚡ Tantangan 60 Detik</button>
+      </div>
+
+      <div class="sheetLabel">Pengaturan Arah Miring Kepala (Nengkleng)</div>
+      <select class="sheetSelect" id="dirSelect">
+        <option value="left_true">Miring Kiri = BENAR | Miring Kanan = SALAH</option>
+        <option value="right_true">Miring Kanan = BENAR | Miring Kiri = SALAH</option>
+      </select>
+
+      <div class="sheetLabel">Sensitivitas Kemiringan Kepala</div>
+      <select class="sheetSelect" id="sensSelect">
+        <option value="mudah">Mudah (Miring sedikit ~11° langsung terbaca)</option>
+        <option value="normal" selected>Seimbang (~14° • Disarankan)</option>
+        <option value="ketat">Ketat (~18° • Harus miring jelas)</option>
+      </select>
+
+      <div class="sheetLabel">Alat Bantu Kamera</div>
+      <div class="pillGroup" style="grid-template-columns:repeat(3,1fr)">
+        <button class="pillChoice" id="calibZeroBtn" type="button">⚖️ Lurus 0°</button>
+        <button class="pillChoice" id="flipCamBtn" type="button">🔄 Balik Kamera</button>
+        <button class="pillChoice" id="sheetFullscreenBtn" type="button">⛶ Fullscreen</button>
+      </div>
+
+      <div class="sheetLabel">Tambah Soal Sendiri ke Topik Aktif</div>
+      <div class="customForm">
+        <input id="customQInput" type="text" maxlength="90" placeholder="Contoh: Luas persegi sisi 6 cm adalah 36 cm²">
+        <input id="customExpInput" type="text" maxlength="110" placeholder="Penjelasan singkat (opsional)">
+        <div class="customFormRow">
+          <select id="customAnsSelect">
+            <option value="true">Kunci: BENAR</option>
+            <option value="false">Kunci: SALAH</option>
+          </select>
+          <button class="customAddBtn" id="addCustomQBtn" type="button">+ Tambah Soal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL HASIL AKHIR -->
+  <div class="finishModal" id="finishModal">
+    <div class="finishCard">
+      <div style="font-size:48px">🏆</div>
+      <h2 id="finishTitle">Ronde Selesai!</h2>
+      <p id="finishDesc" style="font-size:13px;color:#cbd5e1;margin:4px 0 12px">Kamu hebat menjawab kuis bilangan prima!</p>
+      <div class="finishStats">
+        <div><b id="finalScore">0</b><small>SKOR AKHIR</small></div>
+        <div><b id="finalAcc">0/10</b><small>JAWABAN BENAR</small></div>
+      </div>
+      <button class="startCtaBtn" id="playAgainBtn" type="button">🔄 Main Lagi</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// LABEL TOPIK MATEMATIKA
+const TOPIC_NAMES = {
+  prima: "BILANGAN PRIMA",
+  kuadrat: "KUADRAT & AKAR",
+  pecahan: "PECAHAN",
+  bulat: "BILANGAN BULAT",
+  bangun: "LUAS BANGUN DATAR",
+  untung: "UNTUNG & RUGI",
+  campuran: "KUIS CAMPURAN"
+};
+
+// BANK SOAL TETAP + GENERATOR DINAMIS AGAR VARIASI SOAL BANYAK & SELALU ACAK
+const QUESTION_BANK = {
+  prima: [
+    { q: "<em>2</em> adalah satu-satunya bilangan prima yang genap.", ans: true, exp: "Benar! Semua bilangan genap selain 2 habis dibagi 2." },
+    { q: "<em>1</em> termasuk bilangan prima.", ans: false, exp: "Salah! Bilangan prima wajib punya tepat 2 faktor, sedangkan 1 hanya punya 1 faktor." },
+    { q: "<em>9</em> adalah bilangan prima.", ans: false, exp: "Salah! 9 habis dibagi 3 (9 = 3 × 3)." },
+    { q: "<em>17</em> termasuk bilangan prima.", ans: true, exp: "Benar! 17 hanya habis dibagi 1 dan 17." },
+    { q: "<em>21</em> adalah bilangan prima.", ans: false, exp: "Salah! 21 = 3 × 7, sehingga bukan prima." },
+    { q: "<em>29</em> adalah bilangan prima.", ans: true, exp: "Benar! 29 hanya memiliki faktor 1 dan 29." },
+    { q: "<em>51</em> termasuk bilangan prima.", ans: false, exp: "Salah! 51 habis dibagi 3 karena 51 = 3 × 17." },
+    { q: "<em>37</em> adalah bilangan prima.", ans: true, exp: "Benar! 37 adalah bilangan prima." },
+    { q: "<em>91</em> adalah bilangan prima.", ans: false, exp: "Salah! 91 sering menjebak, padahal 91 = 7 × 13." },
+    { q: "<em>41</em> dan <em>43</em> keduanya adalah bilangan prima.", ans: true, exp: "Benar! 41 dan 43 merupakan pasangan prima kembar." },
+    { q: "<em>57</em> termasuk bilangan prima.", ans: false, exp: "Salah! 5 + 7 = 12 habis dibagi 3, yaitu 57 = 3 × 19." },
+    { q: "Ada tepat <em>4</em> bilangan prima antara 1 sampai 10.", ans: true, exp: "Benar! Yaitu 2, 3, 5, dan 7." },
+    { q: "<em>87</em> adalah bilangan prima.", ans: false, exp: "Salah! 87 habis dibagi 3 (87 = 3 × 29)." },
+    { q: "<em>97</em> adalah bilangan prima terbesar di bawah 100.", ans: true, exp: "Benar! 97 adalah bilangan prima dua angka terbesar." },
+    { q: "Faktor prima dari <em>20</em> adalah 2 dan 5.", ans: true, exp: "Benar! 20 = 2² × 5." }
+  ],
+  kuadrat: [
+    { q: "Hasil dari <em>7²</em> adalah 49.", ans: true, exp: "Benar! 7 × 7 = 49." },
+    { q: "Hasil dari <em>8²</em> adalah 16.", ans: false, exp: "Salah! 8² = 8 × 8 = 64 (bukan 8 × 2)." },
+    { q: "Hasil dari <em>12²</em> adalah 144.", ans: true, exp: "Benar! 12 × 12 = 144." },
+    { q: "Nilai dari <em>√81</em> adalah 8.", ans: false, exp: "Salah! √81 = 9 karena 9 × 9 = 81." },
+    { q: "Nilai dari <em>√121</em> adalah 11.", ans: true, exp: "Benar! 11 × 11 = 121." },
+    { q: "<em>15²</em> hasilnya adalah 225.", ans: true, exp: "Benar! 15 × 15 = 225." },
+    { q: "<em>64</em> adalah bilangan kuadrat sempurna.", ans: true, exp: "Benar! 64 merupakan hasil dari 8²." },
+    { q: "Hasil dari <em>3² + 4²</em> adalah 25.", ans: true, exp: "Benar! 9 + 16 = 25 (sama dengan 5²)." },
+    { q: "Hasil dari <em>13²</em> adalah 139.", ans: false, exp: "Salah! 13 × 13 = 169." },
+    { q: "Nilai dari <em>√196</em> adalah 14.", ans: true, exp: "Benar! 14 × 14 = 196." },
+    { q: "<em>50</em> adalah bilangan kuadrat sempurna.", ans: false, exp: "Salah! Bilangan kuadrat di dekatnya adalah 49 (7²) dan 64 (8²)." },
+    { q: "Hasil dari <em>10² - 6²</em> adalah 64.", ans: true, exp: "Benar! 100 - 36 = 64." },
+    { q: "Nilai dari <em>√225</em> adalah 25.", ans: false, exp: "Salah! √225 adalah 15." },
+    { q: "Hasil dari <em>20²</em> adalah 400.", ans: true, exp: "Benar! 20 × 20 = 400." }
+  ],
+  pecahan: [
+    { q: "Pecahan <em>1/2</em> lebih besar daripada <em>1/4</em>.", ans: true, exp: "Benar! 1 bagian dari 2 (0,5) lebih besar dari 1 bagian dari 4 (0,25)." },
+    { q: "Pecahan <em>1/5</em> lebih besar daripada <em>1/3</em>.", ans: false, exp: "Salah! Jika pembilang sama, penyebut yang lebih kecil nilainya lebih besar (1/3 > 1/5)." },
+    { q: "Pecahan <em>2/4</em> senilai dengan <em>1/2</em>.", ans: true, exp: "Benar! Jika 2/4 disederhanakan (dibagi 2) hasilnya 1/2." },
+    { q: "<em>3/4</em> lebih besar daripada <em>2/3</em>.", ans: true, exp: "Benar! Kali silang: 3×3 = 9 lebih besar dari 4×2 = 8." },
+    { q: "Bentuk desimal dari <em>3/4</em> adalah 0,75.", ans: true, exp: "Benar! 3 dibagi 4 = 0,75." },
+    { q: "<em>2/5</em> lebih besar daripada <em>1/2</em>.", ans: false, exp: "Salah! 2/5 = 0,4 sedangkan 1/2 = 0,5." },
+    { q: "<em>50%</em> nilainya sama dengan pecahan <em>1/2</em>.", ans: true, exp: "Benar! 50/100 = 1/2." },
+    { q: "Hasil dari <em>1/4 + 2/4</em> adalah <em>3/8</em>.", ans: false, exp: "Salah! Penyebut tetap 4, jadi 1/4 + 2/4 = 3/4." },
+    { q: "<em>5/6</em> lebih besar daripada <em>4/5</em>.", ans: true, exp: "Benar! 25/30 lebih besar daripada 24/30." },
+    { q: "Pecahan <em>6/8</em> jika disederhanakan menjadi <em>3/4</em>.", ans: true, exp: "Benar! Pembilang dan penyebut sama-sama dibagi 2." },
+    { q: "<em>0,2</em> nilainya sama dengan pecahan <em>1/5</em>.", ans: true, exp: "Benar! 2/10 disederhanakan menjadi 1/5." },
+    { q: "<em>3/10</em> lebih besar daripada <em>2/5</em>.", ans: false, exp: "Salah! 2/5 = 4/10, sehingga 3/10 lebih kecil dari 4/10." }
+  ],
+  bulat: [
+    { q: "Hasil dari <em>-5 + 8</em> adalah 3.", ans: true, exp: "Benar! Utang 5 dibayar 8 masih sisa 3." },
+    { q: "Hasil dari <em>-4 + (-6)</em> adalah 10.", ans: false, exp: "Salah! Negatif ditambah negatif hasilnya tetap negatif, yaitu -10." },
+    { q: "Hasil dari <em>-6 × (-3)</em> adalah 18.", ans: true, exp: "Benar! Bilangan negatif dikali negatif menghasilkan bilangan positif." },
+    { q: "Angka <em>-2</em> lebih kecil daripada <em>-9</em>.", ans: false, exp: "Salah! Pada garis bilangan, -2 berada di sebelah kanan -9 sehingga -2 > -9." },
+    { q: "Hasil dari <em>10 - (-4)</em> adalah 14.", ans: true, exp: "Benar! Mengurangi dengan negatif sama dengan menjumlahkan: 10 + 4 = 14." },
+    { q: "Hasil dari <em>-20 ÷ 5</em> adalah -4.", ans: true, exp: "Benar! Negatif dibagi positif menghasilkan negatif (-4)." },
+    { q: "Hasil dari <em>7 - 12</em> adalah 5.", ans: false, exp: "Salah! Karena pengurangnya lebih besar, hasilnya negatif: -5." },
+    { q: "Hasil dari <em>(-8) × 4</em> adalah -32.", ans: true, exp: "Benar! Negatif dikali positif hasilnya negatif." },
+    { q: "Suhu <em>-3°C</em> lebih dingin daripada suhu <em>2°C</em>.", ans: true, exp: "Benar! -3°C berada di bawah titik beku." },
+    { q: "Hasil dari <em>-15 - (-15)</em> adalah 0.", ans: true, exp: "Benar! -15 + 15 = 0." },
+    { q: "Hasil dari <em>-18 ÷ (-3)</em> adalah -6.", ans: false, exp: "Salah! Negatif dibagi negatif hasilnya positif +6." },
+    { q: "Hasil dari <em>5 + (-3) × 2</em> adalah 4.", ans: false, exp: "Salah! Kerjakan perkalian dulu: 5 + (-6) = -1." }
+  ],
+  bangun: [
+    { q: "Luas persegi dengan sisi <em>6 cm</em> adalah 36 cm².", ans: true, exp: "Benar! Luas persegi = sisi × sisi = 6 × 6 = 36 cm²." },
+    { q: "Luas persegi dengan sisi <em>5 cm</em> adalah 20 cm².", ans: false, exp: "Salah! 20 cm adalah kelilingnya. Luasnya adalah 5 × 5 = 25 cm²." },
+    { q: "Luas persegi panjang <em>8 cm × 4 cm</em> adalah 32 cm².", ans: true, exp: "Benar! Luas = panjang × lebar = 8 × 4 = 32 cm²." },
+    { q: "Luas segitiga dengan alas <em>10 cm</em> dan tinggi <em>6 cm</em> adalah 30 cm².", ans: true, exp: "Benar! Luas segitiga = ½ × 10 × 6 = 30 cm²." },
+    { q: "Luas segitiga dengan alas <em>8 cm</em> dan tinggi <em>5 cm</em> adalah 40 cm².", ans: false, exp: "Salah! Jangan lupa dibagi 2: Luas = ½ × 8 × 5 = 20 cm²." },
+    { q: "Luas jajargenjang dengan alas <em>9 cm</em> dan tinggi <em>4 cm</em> adalah 36 cm².", ans: true, exp: "Benar! Luas jajargenjang = alas × tinggi = 9 × 4 = 36 cm²." },
+    { q: "Persegi yang luasnya <em>49 cm²</em> memiliki panjang sisi 7 cm.", ans: true, exp: "Benar! Karena √49 = 7 cm." },
+    { q: "Luas belah ketupat dengan diagonal <em>6 cm</em> dan <em>8 cm</em> adalah 24 cm².", ans: true, exp: "Benar! Luas = ½ × d₁ × d₂ = ½ × 6 × 8 = 24 cm²." },
+    { q: "Rumus luas lingkaran adalah <em>2 × π × r</em>.", ans: false, exp: "Salah! 2πr adalah keliling lingkaran. Rumus luasnya adalah π × r²." },
+    { q: "Luas trapesium dengan sisi sejajar <em>4 cm & 6 cm</em> serta tinggi <em>4 cm</em> adalah 20 cm².", ans: true, exp: "Benar! Luas = ½ × (4 + 6) × 4 = 20 cm²." },
+    { q: "Luas persegi dengan sisi <em>9 cm</em> adalah 81 cm².", ans: true, exp: "Benar! 9 × 9 = 81 cm²." }
+  ],
+  untung: [
+    { q: "Beli <em>Rp10.000</em> dijual <em>Rp13.000</em> berarti UNTUNG Rp3.000.", ans: true, exp: "Benar! Harga jual lebih tinggi Rp3.000 dari harga beli." },
+    { q: "Beli <em>Rp25.000</em> dijual <em>Rp22.000</em> berarti mendapat UNTUNG.", ans: false, exp: "Salah! Karena harga jual lebih rendah dari harga beli, maka mengalami RUGI Rp3.000." },
+    { q: "Modal <em>Rp50.000</em> dan untung <em>10%</em>, maka untungnya Rp5.000.", ans: true, exp: "Benar! 10% × Rp50.000 = Rp5.000." },
+    { q: "Harga baju <em>Rp100.000</em> diskon <em>20%</em>, maka bayarnya Rp80.000.", ans: true, exp: "Benar! Potongan diskon Rp20.000, sehingga 100.000 - 20.000 = Rp80.000." },
+    { q: "Beli sepeda <em>Rp400.000</em> dijual <em>Rp350.000</em> berarti RUGI Rp50.000.", ans: true, exp: "Benar! Rugi = 400.000 - 350.000 = Rp50.000." },
+    { q: "Harga sepatu <em>Rp200.000</em> diskon <em>25%</em>, maka potongannya Rp25.000.", ans: false, exp: "Salah! 25% dari Rp200.000 adalah Rp50.000." },
+    { q: "Beli 1 lusin pensil <em>Rp12.000</em> lalu dijual Rp1.500/buah, maka UNTUNG.", ans: true, exp: "Benar! Modal Rp1.000/buah dijual Rp1.500/buah (untung Rp500/buah)." },
+    { q: "Jika harga jual sama persis dengan harga beli, maka disebut <em>Impas (Balik Modal)</em>.", ans: true, exp: "Benar! Tidak untung dan tidak rugi disebut impas." },
+    { q: "Beli barang <em>Rp80.000</em> lalu rugi <em>Rp10.000</em>, maka harga jualnya Rp90.000.", ans: false, exp: "Salah! Jika rugi Rp10.000, berarti barang terjual seharga Rp70.000." },
+    { q: "Untung <em>Rp20.000</em> dari modal <em>Rp100.000</em> sama dengan untung 20%.", ans: true, exp: "Benar! (20.000 / 100.000) × 100% = 20%." }
+  ]
+};
+
+// PENGACAK ARRAY (FISHER-YATES SHUFFLE)
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+// GENERATOR SOAL DINAMIS AGAR SETIAP MAIN VARIASINYA BARU
+function generateDynamicQuestions(pack) {
+  const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const list = [];
+
+  if (pack === 'kuadrat') {
+    for (let i = 0; i < 4; i++) {
+      const n = randInt(4, 16);
+      const isTrue = Math.random() > 0.45;
+      const shown = isTrue ? n * n : n * n + (Math.random() > 0.5 ? n : -2);
+      list.push({
+        q: `Hasil dari <em>${n}²</em> adalah ${shown}.`,
+        ans: isTrue,
+        exp: `${isTrue ? 'Benar!' : 'Salah!'} ${n}² = ${n} × ${n} = ${n * n}.`
+      });
+    }
+  } else if (pack === 'bulat') {
+    for (let i = 0; i < 4; i++) {
+      const a = randInt(-15, 12);
+      const b = randInt(-12, 15);
+      const real = a + b;
+      const isTrue = Math.random() > 0.45;
+      const shown = isTrue ? real : -real || (real + 4);
+      const bStr = b < 0 ? `(${b})` : `${b}`;
+      list.push({
+        q: `Hasil dari <em>${a} + ${bStr}</em> adalah ${shown}.`,
+        ans: isTrue,
+        exp: `${isTrue ? 'Benar!' : 'Salah!'} Hasil dari ${a} + ${bStr} adalah ${real}.`
+      });
+    }
+  } else if (pack === 'bangun') {
+    const p = randInt(5, 12), l = randInt(3, 9);
+    const isTrue = Math.random() > 0.45;
+    const shown = isTrue ? p * l : 2 * (p + l);
+    list.push({
+      q: `Luas persegi panjang <em>${p} cm × ${l} cm</em> adalah ${shown} cm².`,
+      ans: isTrue,
+      exp: `${isTrue ? 'Benar!' : 'Salah!'} Luas = ${p} × ${l} = ${p * l} cm².`
+    });
+  } else if (pack === 'untung') {
+    const beli = randInt(2, 9) * 5000;
+    const selisih = randInt(1, 4) * 2000;
+    const untung = Math.random() > 0.5;
+    const jual = untung ? beli + selisih : beli - selisih;
+    const klaimUntung = Math.random() > 0.5;
+    const isTrue = untung === klaimUntung;
+    list.push({
+      q: `Beli <em>Rp${beli.toLocaleString('id-ID')}</em> dijual <em>Rp${jual.toLocaleString('id-ID')}</em> berarti ${klaimUntung ? 'UNTUNG' : 'RUGI'}.`,
+      ans: isTrue,
+      exp: `${isTrue ? 'Benar!' : 'Salah!'} Karena harga jual ${untung ? 'lebih tinggi' : 'lebih rendah'} Rp${selisih.toLocaleString('id-ID')}, maka ${untung ? 'UNTUNG' : 'RUGI'}.`
+    });
+  }
+  return list;
+}
+
+function buildQuestionSet(pack, count = 10) {
+  let pool = [];
+  if (pack === 'campuran') {
+    Object.keys(QUESTION_BANK).forEach(k => {
+      pool.push(...QUESTION_BANK[k], ...generateDynamicQuestions(k));
+    });
+  } else {
+    pool = [...(QUESTION_BANK[pack] || QUESTION_BANK.prima), ...generateDynamicQuestions(pack)];
+  }
+  return shuffleArray(pool).slice(0, count).map(q => ({ ...q }));
+}
+
+const SENSITIVITY = {
+  mudah:  { angle: 10.5, neutral: 5.5, hold: 520 },
+  normal: { angle: 13.8, neutral: 6.5, hold: 680 },
+  ketat:  { angle: 17.5, neutral: 7.5, hold: 850 }
+};
+
+const $ = id => document.getElementById(id);
+
+let currentPack = 'prima';
+let gameMode = 'santai';
+let facingMode = 'user';
+let soundEnabled = true;
+let audioCtx = null;
+let questions = [];
+let qIndex = 0;
+let historyStatus = []; // 'done' | 'wrong' | null
+let score = 0;
+let streak = 0;
+let correctCount = 0;
+let timeLeft = 60;
+let timerInterval = null;
+let roundLocked = false;
+let gameFinished = false;
+let cheerTimeout = null;
+
+// Kamera & Sensor Kepala (MediaPipe Pose / Face titik mata)
+let cameraStream = null;
+let cameraOn = false;
+let cameraBusy = false;
+let poseLandmarker = null;
+let modelLoading = false;
+let neutralOffsetDeg = 0;
+let lastMeasuredDeg = 0;
+let mustReturnNeutral = false;
+let leanState = null; // 'left' | 'right' | null
+let leanSince = 0;
+let smoothAnchor = { x: 50, y: 23, deg: 0 };
+
+function getActiveSensitivity() {
+  return SENSITIVITY[$('sensSelect').value] || SENSITIVITY.normal;
+}
+
+function isLeftTrue() {
+  return $('dirSelect').value === 'left_true';
+}
+
+function updateDirectionLabels() {
+  const leftTrue = isLeftTrue();
+  $('pillLeft').textContent = leftTrue ? '↖ Kiri: BENAR' : '↖ Kiri: SALAH';
+  $('pillRight').textContent = leftTrue ? 'Kanan: SALAH ↗' : 'Kanan: BENAR ↗';
+  $('pillLeft').className = 'leanPill ' + (leftTrue ? 'left' : 'right');
+  $('pillRight').className = 'leanPill ' + (leftTrue ? 'right' : 'left');
+  $('leftGlowText').textContent = leftTrue ? 'BENAR' : 'SALAH';
+  $('rightGlowText').textContent = leftTrue ? 'SALAH' : 'BENAR';
+}
+
+function renderStoryBars() {
+  const wrap = $('storyBars');
+  wrap.innerHTML = questions.map((_, i) => {
+    const st = historyStatus[i];
+    const cls = st === 'done' ? 'done' : st === 'wrong' ? 'wrong' : i === qIndex ? 'current' : '';
+    return `<div class="storySeg ${cls}"><span></span></div>`;
+  }).join('');
+}
+
+function renderCurrentQuestion() {
+  const item = questions[qIndex] || QUESTION_BANK.prima[0];
+  const topicTitle = TOPIC_NAMES[currentPack] || 'MATEMATIKA';
+  $('cardTopic').textContent = topicTitle;
+  if ($('headerTopicName')) $('headerTopicName').textContent = topicTitle;
+  $('cardCounter').textContent = `${qIndex + 1} / ${questions.length}`;
+  $('cardQuestion').innerHTML = item.q;
+  $('scoreVal').textContent = score;
+  $('streakVal').textContent = streak;
+  $('timerPill').hidden = gameMode !== 'cepat';
+  $('timerVal').textContent = timeLeft + 's';
+  setHoldProgress(0);
+  $('foreheadCard').classList.remove('tiltLeft', 'tiltRight');
+  $('leftGlow').classList.remove('active');
+  $('rightGlow').classList.remove('active');
+  renderStoryBars();
+  updateDirectionLabels();
+}
+
+function syncTopicSelectionUI() {
+  document.querySelectorAll('[data-pack]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.pack === currentPack);
+  });
+}
+
+function setHoldProgress(pct) {
+  $('holdFill').style.width = Math.max(0, Math.min(100, pct)) + '%';
+}
+
+function setToast(msg, type = '') {
+  const el = $('feedbackToast');
+  el.innerHTML = msg;
+  el.className = 'explanationToast' + (type ? ' ' + type : '');
+}
+
+function getAudioContext() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new AC();
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  return audioCtx;
+}
+
+// EFEK SUARA MUSIK, SORAKAN HORE & SUARA UCAPAN BAHASA INDONESIA
+function speakCheer(text) {
+  if (!soundEnabled || !('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'id-ID';
+    utter.rate = 1.08;
+    utter.pitch = 1.2;
+    utter.volume = 0.9;
+    window.speechSynthesis.speak(utter);
+  } catch (e) {}
+}
+
+function playSoundEffect(type = 'correct') {
+  if (!soundEnabled) return;
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    if (type === 'correct') {
+      // Melodi koin + fanfare ceria (C5 - E5 - G5 - C6)
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.075);
+        gain.gain.setValueAtTime(0.09, now + idx * 0.075);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.075 + 0.24);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now + idx * 0.075);
+        osc.stop(now + idx * 0.075 + 0.25);
+      });
+
+      // Efek tepuk tangan / confetti burst halus
+      const bufferSize = ctx.sampleRate * 0.18;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.06));
+      const whiteNoise = ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1400;
+      const nGain = ctx.createGain();
+      nGain.gain.setValueAtTime(0.08, now + 0.12);
+      nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      whiteNoise.connect(filter).connect(nGain).connect(ctx.destination);
+      whiteNoise.start(now + 0.12);
+
+      const cheers = ['Hore! Benar!', 'Mantap sekali!', 'Hore! Tepat!', 'Luar biasa!', 'Hebat!'];
+      speakCheer(cheers[Math.floor(Math.random() * cheers.length)]);
+    } else if (type === 'wrong') {
+      // Nada menurun "tetot"
+      const notes = [310, 220];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.13);
+        gain.gain.setValueAtTime(0.06, now + idx * 0.13);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.13 + 0.2);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now + idx * 0.13);
+        osc.stop(now + idx * 0.13 + 0.22);
+      });
+      speakCheer('Kurang tepat, ayo coba lagi!');
+    } else if (type === 'finish') {
+      // Fanfare kemenangan akhir ronde
+      const notes = [523.25, 659.25, 783.99, 659.25, 1046.5];
+      const times = [0, 0.11, 0.22, 0.34, 0.46];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + times[idx]);
+        gain.gain.setValueAtTime(0.11, now + times[idx]);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + times[idx] + 0.36);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now + times[idx]);
+        osc.stop(now + times[idx] + 0.38);
+      });
+      speakCheer('Hore! Selamat, kamu telah menyelesaikan ronde ini!');
+    }
+  } catch (e) {}
+}
+
+function showCheerBanner(text, isWrong = false) {
+  const b = $('cheerBanner');
+  b.textContent = text;
+  b.classList.toggle('wrong', isWrong);
+  b.classList.add('show');
+  if (cheerTimeout) clearTimeout(cheerTimeout);
+  cheerTimeout = setTimeout(() => b.classList.remove('show'), 1150);
+}
+
+function spawnConfetti() {
+  const colors = ['#16db93', '#ffd166', '#4cc9f0', '#f72585'];
+  for (let i = 0; i < 16; i++) {
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    c.style.left = (20 + Math.random() * 60) + 'vw';
+    c.style.background = colors[i % colors.length];
+    c.style.setProperty('--dx', (Math.random() * 180 - 90) + 'px');
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1700);
+  }
+}
+
+function submitAnswer(userChoiceBool) {
+  if (roundLocked || gameFinished) return;
+  roundLocked = true;
+  const item = questions[qIndex];
+  const isCorrect = userChoiceBool === item.ans;
+
+  if (isCorrect) {
+    streak++;
+    correctCount++;
+    score += 100 + Math.min(streak - 1, 5) * 20;
+    historyStatus[qIndex] = 'done';
+    playSoundEffect('correct');
+    spawnConfetti();
+    const bannerTexts = ['🎉 HORE! BENAR!', '🌟 MANTAP! +100', '🔥 KEREN SEKALI!', '🥳 YEY! TEPAT!'];
+    showCheerBanner(bannerTexts[Math.floor(Math.random() * bannerTexts.length)], false);
+    setToast(`✅ <b>HORE TEPAT!</b> ${item.exp}`, 'ok');
+  } else {
+    streak = 0;
+    historyStatus[qIndex] = 'wrong';
+    playSoundEffect('wrong');
+    showCheerBanner('🙊 OOPS! KURANG TEPAT', true);
+    setToast(`❌ <b>BELUM TEPAT.</b> ${item.exp}`, 'warn');
+  }
+
+  $('scoreVal').textContent = score;
+  $('streakVal').textContent = streak;
+  renderStoryBars();
+  setHoldProgress(100);
+
+  setTimeout(() => {
+    if (gameFinished) return;
+    qIndex++;
+    if (qIndex >= questions.length) {
+      finishGame(false);
+    } else {
+      roundLocked = false;
+      leanState = null;
+      renderCurrentQuestion();
+    }
+  }, 1650);
+}
+
+function finishGame(timeout = false) {
+  gameFinished = true;
+  roundLocked = true;
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  playSoundEffect('finish');
+  spawnConfetti();
+  $('finishTitle').textContent = timeout ? 'Waktu Habis! ⏱️' : 'Hore! Ronde Selesai! 🎉';
+  $('finishDesc').textContent = `Topik ${TOPIC_NAMES[currentPack]}: Kamu menjawab benar ${correctCount} dari ${questions.length} soal acak!`;
+  $('finalScore').textContent = score;
+  $('finalAcc').textContent = `${correctCount}/${questions.length}`;
+  $('finishModal').classList.add('show');
+}
+
+function restartGame() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  questions = buildQuestionSet(currentPack, 10);
+  qIndex = 0;
+  historyStatus = new Array(questions.length).fill(null);
+  score = 0;
+  streak = 0;
+  correctCount = 0;
+  timeLeft = 60;
+  roundLocked = false;
+  gameFinished = false;
+  leanState = null;
+  $('finishModal').classList.remove('show');
+  syncTopicSelectionUI();
+  renderCurrentQuestion();
+  setToast(`Topik <b>${TOPIC_NAMES[currentPack]}</b> siap! Soal telah diacak, miringkan kepala Kiri/Kanan!`);
+
+  if (gameMode === 'cepat') {
+    timerInterval = setInterval(() => {
+      if (gameFinished || roundLocked) return;
+      timeLeft = Math.max(0, timeLeft - 1);
+      $('timerVal').textContent = timeLeft + 's';
+      if (timeLeft === 0) finishGame(true);
+    }, 1000);
+  }
+}
+
+// MEMUAT MEDIAPIPE POSE LANDMARKER UNTUK DETEKSI MATA & DAHI
+async function ensureModelLoaded() {
+  if (poseLandmarker || modelLoading) return;
+  modelLoading = true;
+  $('statusText').textContent = 'Memuat sensor kepala AI...';
+  try {
+    let mod = null;
+    for (const url of [
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.21/+esm',
+      'https://esm.sh/@mediapipe/tasks-vision@0.10.21'
+    ]) {
+      try {
+        mod = await import(url);
+        if (mod.PoseLandmarker && mod.FilesetResolver) break;
+      } catch (e) { mod = null; }
+    }
+    if (!mod) throw new Error('CDN MediaPipe tidak terjangkau');
+    const vision = await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.21/wasm');
+    const modelUrl = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+    try {
+      poseLandmarker = await mod.PoseLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: modelUrl, delegate: 'GPU' },
+        runningMode: 'VIDEO',
+        numPoses: 1
+      });
+    } catch (e) {
+      poseLandmarker = await mod.PoseLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: modelUrl, delegate: 'CPU' },
+        runningMode: 'VIDEO',
+        numPoses: 1
+      });
+    }
+    if (cameraOn) $('statusText').textContent = 'Sensor Kepala AR Aktif';
+  } catch (err) {
+    $('statusText').textContent = 'Kamera Aktif (Mode Sentuh)';
+  } finally {
+    modelLoading = false;
+  }
+}
+
+// AKTIFKAN KAMERA LANGSUNG / DENGAN TOMBOL
+async function startCamera() {
+  if (cameraOn || cameraBusy) return;
+  cameraBusy = true;
+  $('startCtaLabel').textContent = 'Menghubungkan Kamera...';
+  $('statusText').textContent = 'Meminta izin kamera...';
+
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Browser tidak mendukung kamera');
+    }
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: { ideal: facingMode }, width: { ideal: 720 }, height: { ideal: 1280 } }
+      });
+    } catch (e) {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+    }
+
+    cameraStream = stream;
+    const video = $('video');
+    video.srcObject = stream;
+    video.classList.toggle('unmirrored', facingMode === 'environment');
+    await video.play();
+
+    cameraOn = true;
+    video.style.display = 'block';
+    $('startPrompt').hidden = true;
+    $('liveDot').classList.add('on');
+    $('shutterBtn').classList.add('live');
+    $('shutterIcon').textContent = '⏹';
+    $('statusText').textContent = 'Kamera Aktif';
+
+    requestAnimationFrame(renderARLoop);
+    void ensureModelLoaded();
+  } catch (err) {
+    cameraOn = false;
+    $('startPrompt').hidden = false;
+    $('promptTitle').textContent = 'Ketuk untuk Mengizinkan Kamera';
+    $('promptDesc').textContent = 'Klik tombol di bawah lalu pilih "Izinkan / Allow" pada pop-up kamera browser Anda.';
+    $('startCtaLabel').textContent = 'Aktifkan Kamera';
+    $('statusText').textContent = 'Menunggu izin kamera';
+  } finally {
+    cameraBusy = false;
+  }
+}
+
+function stopCamera() {
+  cameraOn = false;
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+  }
+  const video = $('video');
+  try { video.pause(); } catch (e) {}
+  video.srcObject = null;
+  video.style.display = 'none';
+  const canvas = $('arCanvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+  $('liveDot').classList.remove('on');
+  $('shutterBtn').classList.remove('live');
+  $('shutterIcon').textContent = '📷';
+  $('statusText').textContent = 'Kamera Nonaktif';
+  $('startPrompt').hidden = false;
+  $('startCtaLabel').textContent = 'Mulai Kamera Sekarang';
+  $('foreheadAnchor').style.left = '50%';
+  $('foreheadAnchor').style.top = '23%';
+  $('foreheadAnchor').style.transform = 'translate(-50%,-50%) rotate(0deg)';
+}
+
+// LOOP PELACAKAN KEPALA & POSISI DAHI AR
+let lastDetectAt = 0;
+let lastVideoTime = -1;
+
+function renderARLoop(now) {
+  if (!cameraOn) return;
+  requestAnimationFrame(renderARLoop);
+  if (now - lastDetectAt < 65) return;
+  lastDetectAt = now;
+
+  const video = $('video');
+  if (video.readyState < 2 || !poseLandmarker) return;
+  if (video.currentTime === lastVideoTime) return;
+  lastVideoTime = video.currentTime;
+
+  try {
+    const res = poseLandmarker.detectForVideo(video, now);
+    const canvas = $('arCanvas');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width = video.videoWidth || 720;
+    const h = canvas.height = video.videoHeight || 1280;
+    ctx.clearRect(0, 0, w, h);
+
+    if (!res?.landmarks?.length) {
+      setHoldProgress(0);
+      return;
+    }
+
+    const pts = res.landmarks[0];
+    const nose = pts[0], lEye = pts[2], rEye = pts[5], lEar = pts[7], rEar = pts[8];
+    if (!nose || !lEye || !rEye) return;
+
+    const mirror = facingMode !== 'environment';
+    const mx = x => mirror ? (1 - x) : x;
+
+    // Titik mata di layar (kiri layar vs kanan layar)
+    const eye1 = { x: mx(lEye.x), y: lEye.y };
+    const eye2 = { x: mx(rEye.x), y: rEye.y };
+    const leftScreenEye = eye1.x < eye2.x ? eye1 : eye2;
+    const rightScreenEye = eye1.x < eye2.x ? eye2 : eye1;
+
+    const midEyeX = (leftScreenEye.x + rightScreenEye.x) / 2;
+    const midEyeY = (leftScreenEye.y + rightScreenEye.y) / 2;
+    const eyeDist = Math.max(Math.hypot(rightScreenEye.x - leftScreenEye.x, rightScreenEye.y - leftScreenEye.y), 0.04);
+
+    // Sudut kemiringan kepala dalam derajat (+ = miring ke kanan layar, - = miring ke kiri layar)
+    const rawDeg = Math.atan2(rightScreenEye.y - leftScreenEye.y, rightScreenEye.x - leftScreenEye.x) * (180 / Math.PI);
+    lastMeasuredDeg = rawDeg;
+    const tiltDeg = rawDeg - neutralOffsetDeg;
+
+    // Gambar titik mata halus & garis bantu AR
+    ctx.strokeStyle = 'rgba(76, 201, 240, 0.7)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(leftScreenEye.x * w, leftScreenEye.y * h);
+    ctx.lineTo(rightScreenEye.x * w, rightScreenEye.y * h);
+    ctx.stroke();
+
+    for (const p of [leftScreenEye, rightScreenEye]) {
+      ctx.beginPath();
+      ctx.fillStyle = '#ffd166';
+      ctx.arc(p.x * w, p.y * h, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Posisi kartu tepat di atas dahi (di atas titik tengah mata)
+    const targetX = Math.max(24, Math.min(76, midEyeX * 100));
+    const foreheadOffset = Math.min(Math.max(eyeDist * 155, 11), 22);
+    const targetY = Math.max(15, Math.min(48, (midEyeY * 100) - foreheadOffset));
+    const clampedRot = Math.max(-24, Math.min(24, tiltDeg));
+
+    smoothAnchor.x = smoothAnchor.x * 0.65 + targetX * 0.35;
+    smoothAnchor.y = smoothAnchor.y * 0.65 + targetY * 0.35;
+    smoothAnchor.deg = smoothAnchor.deg * 0.65 + clampedRot * 0.35;
+
+    const anchor = $('foreheadAnchor');
+    anchor.style.left = smoothAnchor.x.toFixed(1) + '%';
+    anchor.style.top = smoothAnchor.y.toFixed(1) + '%';
+    anchor.style.transform = `translate(-50%, -50%) rotate(${smoothAnchor.deg.toFixed(1)}deg)`;
+
+    processHeadTiltAnswer(tiltDeg, now);
+  } catch (e) {}
+}
+
+function processHeadTiltAnswer(tiltDeg, now) {
+  if (roundLocked || gameFinished) return;
+  const sens = getActiveSensitivity();
+  const absDeg = Math.abs(tiltDeg);
+
+  // Wajib kembali tegak di tengah setelah menjawab soal sebelumnya
+  if (mustReturnNeutral) {
+    if (absDeg <= sens.neutral) {
+      mustReturnNeutral = false;
+      setToast('Kepala sudah lurus! Miringkan ke Kiri atau Kanan untuk menjawab.');
+    } else {
+      setHoldProgress(0);
+      return;
+    }
+  }
+
+  const card = $('foreheadCard');
+  const lGlow = $('leftGlow'), rGlow = $('rightGlow');
+
+  let detectedDir = null;
+  if (tiltDeg <= -sens.angle) detectedDir = 'left';
+  else if (tiltDeg >= sens.angle) detectedDir = 'right';
+
+  card.classList.toggle('tiltLeft', detectedDir === 'left');
+  card.classList.toggle('tiltRight', detectedDir === 'right');
+  lGlow.classList.toggle('active', detectedDir === 'left');
+  rGlow.classList.toggle('active', detectedDir === 'right');
+
+  if (!detectedDir) {
+    leanState = null;
+    setHoldProgress(0);
+    return;
+  }
+
+  if (leanState !== detectedDir) {
+    leanState = detectedDir;
+    leanSince = now;
+    setHoldProgress(8);
+    return;
+  }
+
+  const elapsed = now - leanSince;
+  const pct = Math.min(100, (elapsed / sens.hold) * 100);
+  setHoldProgress(pct);
+
+  if (elapsed >= sens.hold) {
+    mustReturnNeutral = true;
+    const leftTrue = isLeftTrue();
+    const chosenAnswer = detectedDir === 'left' ? leftTrue : !leftTrue;
+    submitAnswer(chosenAnswer);
+  }
+}
+
+// EVENT LISTENERS
+$('startCtaBtn').addEventListener('click', startCamera);
+$('shutterBtn').addEventListener('click', () => {
+  if (cameraOn) stopCamera();
+  else startCamera();
+});
+
+$('flipCamBtn').addEventListener('click', () => {
+  facingMode = facingMode === 'user' ? 'environment' : 'user';
+  if (cameraOn) {
+    stopCamera();
+    startCamera();
+  }
+});
+
+$('calibZeroBtn').addEventListener('click', () => {
+  neutralOffsetDeg = lastMeasuredDeg;
+  mustReturnNeutral = false;
+  setToast('⚖️ Posisi kepala saat ini ditetapkan sebagai titik lurus (0°).', 'ok');
+});
+
+$('skipBtn').addEventListener('click', () => {
+  if (gameFinished) return;
+  streak = 0;
+  qIndex = (qIndex + 1) % questions.length;
+  roundLocked = false;
+  renderCurrentQuestion();
+});
+
+$('btnAnswerTrue').addEventListener('click', () => submitAnswer(true));
+$('btnAnswerFalse').addEventListener('click', () => submitAnswer(false));
+
+$('soundToggleBtn').addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  $('soundToggleBtn').textContent = soundEnabled ? '🔊' : '🔇';
+  if (!soundEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+  setToast(soundEnabled ? '🔊 Efek suara & sorakan Hore diaktifkan!' : '🔇 Suara dimatikan sementara.');
+});
+
+// FITUR FULLSCREEN (LAYAR PENUH)
+async function toggleFullscreen() {
+  const frame = $('phoneFrame');
+  const docEl = document.documentElement;
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+
+  try {
+    if (!isFs) {
+      if (frame.requestFullscreen) await frame.requestFullscreen();
+      else if (frame.webkitRequestFullscreen) await frame.webkitRequestFullscreen();
+      else if (docEl.requestFullscreen) await docEl.requestFullscreen();
+      else frame.classList.toggle('isFullscreen');
+    } else {
+      if (document.exitFullscreen) await document.exitFullscreen();
+      else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+      frame.classList.remove('isFullscreen');
+    }
+  } catch (e) {
+    // Fallback jika dibatasi iframe preview
+    frame.classList.toggle('isFullscreen');
+  }
+  syncFullscreenUI();
+}
+
+function syncFullscreenUI() {
+  const frame = $('phoneFrame');
+  const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || frame.classList.contains('isFullscreen'));
+  frame.classList.toggle('isFullscreen', isFs);
+  if ($('fullscreenBtn')) $('fullscreenBtn').textContent = isFs ? '🗗' : '⛶';
+  if ($('sheetFullscreenBtn')) $('sheetFullscreenBtn').textContent = isFs ? '🗗 Keluar Penuh' : '⛶ Fullscreen';
+}
+
+$('fullscreenBtn').addEventListener('click', toggleFullscreen);
+$('sheetFullscreenBtn').addEventListener('click', () => {
+  toggleFullscreen();
+  $('sheetBackdrop').classList.remove('show');
+});
+document.addEventListener('fullscreenchange', syncFullscreenUI);
+document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
+
+function selectTopicPack(pack) {
+  if (!pack) return;
+  currentPack = pack;
+  restartGame();
+}
+
+$('frontTopicGrid').addEventListener('click', e => {
+  const btn = e.target.closest('[data-pack]');
+  if (!btn) return;
+  selectTopicPack(btn.dataset.pack);
+});
+
+$('openSheetTopBtn').addEventListener('click', () => $('sheetBackdrop').classList.add('show'));
+$('openSheetBtn').addEventListener('click', () => $('sheetBackdrop').classList.add('show'));
+$('closeSheetBtn').addEventListener('click', () => $('sheetBackdrop').classList.remove('show'));
+$('sheetBackdrop').addEventListener('click', e => {
+  if (e.target === $('sheetBackdrop')) $('sheetBackdrop').classList.remove('show');
+});
+
+$('packageGroup').addEventListener('click', e => {
+  const btn = e.target.closest('[data-pack]');
+  if (!btn) return;
+  selectTopicPack(btn.dataset.pack);
+  $('sheetBackdrop').classList.remove('show');
+});
+
+$('modeGroup').addEventListener('click', e => {
+  const btn = e.target.closest('[data-mode]');
+  if (!btn) return;
+  gameMode = btn.dataset.mode;
+  document.querySelectorAll('#modeGroup .pillChoice').forEach(b => b.classList.toggle('active', b === btn));
+  restartGame();
+  $('sheetBackdrop').classList.remove('show');
+});
+
+$('dirSelect').addEventListener('change', updateDirectionLabels);
+
+$('addCustomQBtn').addEventListener('click', () => {
+  const qText = ($('customQInput').value || '').trim();
+  const expText = ($('customExpInput').value || '').trim();
+  const ansBool = $('customAnsSelect').value === 'true';
+  if (!qText) return;
+  const targetKey = currentPack === 'campuran' ? 'prima' : currentPack;
+  QUESTION_BANK[targetKey].unshift({
+    q: qText,
+    ans: ansBool,
+    exp: expText || (ansBool ? 'Pernyataan ini benar.' : 'Pernyataan ini salah.')
+  });
+  $('customQInput').value = '';
+  $('customExpInput').value = '';
+  restartGame();
+  $('sheetBackdrop').classList.remove('show');
+  setToast('✅ Soal baru berhasil ditambahkan dan diacak ke dalam topik!', 'ok');
+});
+
+$('playAgainBtn').addEventListener('click', restartGame);
+
+// Inisialisasi awal & coba jalankan kamera otomatis
+restartGame();
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { void startCamera(); }, 250);
+});
+</script>
+</body>
+</html>
